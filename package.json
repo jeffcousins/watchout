@@ -11,5 +11,7 @@
   "bugs": {
     "url": "https://github.com/remotebeta-labs/sprint.watchout/issues"
   },
-  "homepage": "https://github.com/remotebeta-labs/sprint.watchout"
+  "homepage": "https://github.com/remotebeta-labs/sprint.watchout",
+  "dependencies": {
+  }
 }
