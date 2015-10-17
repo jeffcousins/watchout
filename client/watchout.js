@@ -30,8 +30,15 @@ var enemyAttrs = enemies
                    .attr("r", function (d) { return d.r; })
                    .style("fill", function (d) { return d.fill; });
 
-
-
+var relocate = function() {
+  d3.selectAll('circle').transition()
+    .duration(1000)
+    .delay(function(d, i) {return i * 10})
+    .attr('cx', function(d) { return Math.floor(Math.random()*600)+50; })
+    .attr('cy', function(d) { return Math.floor(Math.random()*400)+25; })
+    setTimeout(relocate, 1000);
+};
+setTimeout(relocate, 2000);
 
 var updateScore = function() {
 
