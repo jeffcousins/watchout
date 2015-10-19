@@ -73,10 +73,10 @@ var detectCollisions = function(enemy) {
   }
 };
 
-var tweenWithCollisionDetection = function(endData) {
+var tweenWithCollisionDetection = function() {
   var enemy = d3.select(this);
 
-  return function(t) {
+  return function() {
     detectCollisions(enemy);
   };
 };
