@@ -2,3 +2,8 @@ body {
   font-family: Verdana, Courier, Arial;
   text-align: center;
 }
+
+.message {
+  font-weight: bold;
+  color: #0099CC;
+}

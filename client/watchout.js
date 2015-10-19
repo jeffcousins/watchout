@@ -57,11 +57,13 @@ var detectCollisions = function(enemy) {
   var playerCx = parseFloat(playerLocation.x);
   var playerCy = parseFloat(playerLocation.y);
   var enemyR = parseInt(enemy.attr('r'));
+  var stateColor = enemy.style('fill');
 
   if (Math.hypot(enemyCx - playerCx, enemyCy - playerCy) < enemyR + 8) {
     currentScore = 0;
     if (stateChange) {
       stateChange = false;
+      $('.message').css('color', stateColor);
       collisionState = states[Math.floor(Math.random() * states.length)];
       setTimeout(function() {
         stateChange = true;
@@ -126,7 +128,7 @@ var relocate = function() {
       return Math.floor(Math.random()*width); })
     .attr('cy', function(d) {
       return Math.floor(Math.random()*height); })
-    .attr('r', function(d) { 
+    .attr('r', function(d) {
       return Math.floor(Math.max(5, Math.random()*50)); })
     .style('fill', function(d) { return randomRGB(); })
     .tween('custom', tweenWithCollisionDetection)
