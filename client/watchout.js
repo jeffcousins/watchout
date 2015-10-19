@@ -1,53 +1,138 @@
-var height = 450;
-var width = 700;
-var numEnemies = 30;
+var height = 600;
+var width = 800;
+var numEnemies = prompt('how many emenys do u want?', 20);
 var highScore = 0;
 var currentScore = 0;
-var collisions = 0;
+var collisionState = 'don\'t get hit, hooman';
+var states = ['i came in like a wreckingball', 'everyone who ever loved u was wrong',
+              'it\'s a good thing ur pretty', 'do u know hao to play?',
+              'don\'t tell anyone you know me', 'LOLOL', 'omg how did u not see that',
+              'ur failurez shood be on the youtube', 'this is why people talk about u',
+              'meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow',
+              'never gonna give u up, never gonna let u down, never gonna run around and desert uuuu',
+              'that\'s it. we r no longer friends.', '/giphy incompetence'];
+var stateChange = true;
+var playerLocation = { x: width/2, y: height/2, falseRadius: 8 };
+var numUpdates = 0;
 
-var svg = d3.select('body').append('svg').attr('width', width)
-  .attr('height', height).style('background-color', '#aaa');
+var randomRGB = function() {
+  var result = [];
+  for (var i = 0; i < 3; i++) {
+    result.push(Math.floor(Math.random() * 255));
+  }
 
-var createEnemies = function(numberOfEnemies) {
-  var enemyArray = _.range(numberOfEnemies);
-  // enemyArray should be [0,1,2,3,4,5,6,7,8,9,10...29]
-  var enemyData = _.map(enemyArray, function(val, index, collection) {
-    return {"cx": Math.floor(Math.random()*(width-50))+25,
-            "cy": Math.floor(Math.random()*(height-50))+25,
-            "r": 10,
-            "fill": 'black'};
-  });
-  return enemyData;
-};
-
-var enemyData = createEnemies(numEnemies);
-
-var enemies = svg.selectAll('circle').data(enemyData).enter().append('circle');
-
-var enemyAttrs = enemies
-                   .attr("cx", function (d) { return d.cx; })
-                   .attr("cy", function (d) { return d.cy; })
-                   .attr("r", function (d) { return d.r; })
-                   .style("fill", function (d) { return d.fill; });
-
-var relocate = function() {
-  d3.selectAll('circle').transition()
-    .duration(1000)
-    .delay(function(d, i) {return i * 10})
-    .attr('cx', function(d) { return Math.floor(Math.random()*600)+50; })
-    .attr('cy', function(d) { return Math.floor(Math.random()*400)+25; })
-    setTimeout(relocate, 1000);
-};
-setTimeout(relocate, 2000);
+  return 'rgb(' + result.join(',') + ')';
+}
 
 var updateScore = function() {
-
+  d3.select('.current span').text(currentScore);
+  d3.select('.high span').text(highScore);
+  d3.select('.message span').text(collisionState);
 };
 
-var updateHighScore = function() {
-
+var scoreCounter = function() {
+  currentScore += 1;
+  highScore = Math.max(currentScore, highScore);
+  updateScore();
+  setTimeout(scoreCounter, 100);
 };
 
-var getMousePosition = function() {
+setTimeout(scoreCounter, 3000);
 
+var dragmove = function(d) {
+  var currentX = Math.max(1, Math.min(width - 17, d3.event.x));
+  var currentY = Math.max(1, Math.min(height - 17, d3.event.y));
+
+  d3.select(this)
+    .attr('x', d.x = currentX)
+    .attr('y', d.y = currentY);
+
+  playerLocation.x = currentX;
+  playerLocation.y = currentY;
 };
+
+var detectCollisions = function(enemy) {
+  var enemyCx = parseFloat(enemy.attr('cx'));
+  var enemyCy = parseFloat(enemy.attr('cy'));
+  var playerCx = parseFloat(playerLocation.x);
+  var playerCy = parseFloat(playerLocation.y);
+  var enemyR = parseInt(enemy.attr('r'));
+
+  if (Math.hypot(enemyCx - playerCx, enemyCy - playerCy) < enemyR + 8) {
+    currentScore = 0;
+    if (stateChange) {
+      stateChange = false;
+      collisionState = states[Math.floor(Math.random() * states.length)];
+      setTimeout(function() {
+        stateChange = true;
+        collisionState = 'don\'t get hit, hooman';
+      }, 3000);
+    }
+  }
+};
+
+var tweenWithCollisionDetection = function(endData) {
+  var enemy = d3.select(this);
+
+  return function(t) {
+    detectCollisions(enemy);
+  };
+};
+
+var svg = d3.select('body').append('svg').attr('width', width)
+  .attr('height', height).style('background-color', 'black').style('border-radius', '10px');
+
+var drag = d3.behavior.drag()
+    .origin(function(d) { return d; })
+    .on("drag", dragmove);
+
+var createEnemies = function(numberOfEnemies) {
+  return _.range(numberOfEnemies);
+};
+
+var enemies = svg.selectAll('circle').data(createEnemies(numEnemies)).enter().append('circle')
+  .attr('cx', function() { return Math.floor(Math.random()*width); })
+  .attr('cy', function() { return Math.floor(Math.random()*height); })
+  .attr('r',  function() { return Math.floor(Math.max(8, Math.random()*60)); })
+  .attr('class', 'enemy')
+  .style("fill", function () { return randomRGB(); });
+
+var player = svg.selectAll('rect')
+  .data([{x: width/2, y: height/2, width: 16, height: 16}])
+  .enter().append('rect').call(drag);
+
+player.attr('x', function(d) { return d.x; })
+  .attr('y', function(d) { return d.y; })
+  .attr('width', function(d) { return d.width; })
+  .attr('height', function(d) { return d.height; })
+  .style('fill', 'red')
+  .style('stroke', 'white');
+
+var changeColor = function() {
+  player.transition().duration(100)
+      .style("fill", "#0099CC")
+    .transition()
+      .style("fill", "#00CCCC")
+    .each("end", changeColor);
+}
+
+changeColor();
+
+var relocate = function() {
+  enemies.transition()
+    .duration(2500)
+    .delay(function(d, i) {return i * 10})
+    .attr('cx', function(d) {
+      return Math.floor(Math.random()*width); })
+    .attr('cy', function(d) {
+      return Math.floor(Math.random()*height); })
+    .attr('r', function(d) { 
+      return Math.floor(Math.max(5, Math.random()*50)); })
+    .style('fill', function(d) { return randomRGB(); })
+    .tween('custom', tweenWithCollisionDetection)
+    .each('end', function() {
+      relocate();
+    });
+};
+
+setTimeout(relocate, 3000);
