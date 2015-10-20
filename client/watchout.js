@@ -1,6 +1,14 @@
 var height = 600;
 var width = 800;
-var numEnemies = prompt('how many emenys do u want?', 20);
+var numEnemies = prompt('hooman. how many emenys do u want?', 20);
+var operationSpark = prompt('do u want to stop by Operation Spark? y or n');
+
+if (operationSpark === 'y') {
+  operationSpark = true;
+} else if (operationSpark === 'n') {
+  operationSpark = false;
+}
+
 var highScore = 0;
 var currentScore = 0;
 var collisionState = 'don\'t get hit, hooman';
@@ -8,19 +16,33 @@ var states = ['I CAME IN LIKE A WRECKINGBALL', 'everyone who ever loved u was wr
               'it\'s a good thing ur pretty', 'LOLOL', 'omg how did u not see that',
               'ur failurez shood be on the youtube', 'this is why people talk about u',
               'meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow',
-              'never gonna give u up, never gonna let u down, never gonna run around and desert uuuu',
               'that\'s it. we r no longer friends.', '/giphy incompetence'];
 var stateChange = true;
 var playerLocation = { x: width/2, y: height/2 };
 var numUpdates = 0;
+var bgColor = '#FFF';
+var wallColors = ['rgb(51,111,173)', 'rgb(91,66,119)', 'rgb(168,46,57)', 'rgb(200,200,125)',
+                  'rgb(220,180,65)', 'rgb(94,159,64)', 'rgb(144,169,190)']
 
-var randomRGB = function() {
-  var result = [];
-  for (var i = 0; i < 3; i++) {
-    result.push(Math.floor(Math.random() * 255));
-  }
+if (operationSpark) {
+  
+  var randomRGB = function() {
+    return wallColors[Math.floor(Math.random() * wallColors.length)];
+  };
 
-  return 'rgb(' + result.join(',') + ')';
+} else {
+
+  bgColor = '#000'
+  
+  var randomRGB = function() {
+    var result = [];
+    for (var i = 0; i < 3; i++) {
+      result.push(Math.floor(Math.random() * 255));
+    }
+
+    return 'rgb(' + result.join(',') + ')';
+  };
+
 }
 
 var updateScore = function() {
@@ -82,7 +104,7 @@ var tweenWithCollisionDetection = function() {
 };
 
 var svg = d3.select('body').append('svg').attr('width', width)
-  .attr('height', height).style('background-color', 'black').style('border-radius', '10px');
+  .attr('height', height).style('background-color', bgColor).style('border-radius', '10px');
 
 var drag = d3.behavior.drag()
     .origin(function(d) { return d; })
@@ -129,7 +151,7 @@ var relocate = function() {
     .attr('cy', function(d) {
       return Math.floor(Math.random()*height); })
     .attr('r', function(d) {
-      return Math.floor(Math.max(5, Math.random()*50)); })
+      return Math.floor(Math.max(15, Math.random()*70)); })
     .style('fill', function(d) { return randomRGB(); })
     .tween('custom', tweenWithCollisionDetection)
     .each('end', function() {
