@@ -15,7 +15,7 @@ var collisionState = 'don\'t get hit, hooman';
 var states = ['I CAME IN LIKE A WRECKINGBALL', 'everyone who ever loved u was wrong',
               'it\'s a good thing ur pretty', 'LOLOL', 'omg how did u not see that',
               'ur failurez shood be on the youtube', 'this is why people talk about u',
-              'meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow',
+              'meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow',
               'that\'s it. we r no longer friends.', '/giphy incompetence'];
 var stateChange = true;
 var playerLocation = { x: width/2, y: height/2 };
@@ -29,6 +29,10 @@ if (operationSpark) {
   var randomRGB = function() {
     return wallColors[Math.floor(Math.random() * wallColors.length)];
   };
+
+  $('body').css('background-color', '#000');
+  $('.high').css('color', '#FFF');
+  $('.current').css('color', '#FFF');
 
 } else {
 
@@ -90,7 +94,7 @@ var detectCollisions = function(enemy) {
       setTimeout(function() {
         stateChange = true;
         collisionState = 'don\'t get hit, hooman';
-      }, 2000);
+      }, 2400);
     }
   }
 };
