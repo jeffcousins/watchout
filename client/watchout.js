@@ -4,15 +4,14 @@ var numEnemies = prompt('how many emenys do u want?', 20);
 var highScore = 0;
 var currentScore = 0;
 var collisionState = 'don\'t get hit, hooman';
-var states = ['i came in like a wreckingball', 'everyone who ever loved u was wrong',
-              'it\'s a good thing ur pretty', 'do u know hao to play?',
-              'don\'t tell anyone you know me', 'LOLOL', 'omg how did u not see that',
+var states = ['I CAME IN LIKE A WRECKINGBALL', 'everyone who ever loved u was wrong',
+              'it\'s a good thing ur pretty', 'LOLOL', 'omg how did u not see that',
               'ur failurez shood be on the youtube', 'this is why people talk about u',
               'meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow',
               'never gonna give u up, never gonna let u down, never gonna run around and desert uuuu',
               'that\'s it. we r no longer friends.', '/giphy incompetence'];
 var stateChange = true;
-var playerLocation = { x: width/2, y: height/2, falseRadius: 8 };
+var playerLocation = { x: width/2, y: height/2 };
 var numUpdates = 0;
 
 var randomRGB = function() {
@@ -60,6 +59,7 @@ var detectCollisions = function(enemy) {
   var stateColor = enemy.style('fill');
 
   if (Math.hypot(enemyCx - playerCx, enemyCy - playerCy) < enemyR + 8) {
+    enemy.style('stroke', ' white');
     currentScore = 0;
     if (stateChange) {
       stateChange = false;
@@ -68,7 +68,7 @@ var detectCollisions = function(enemy) {
       setTimeout(function() {
         stateChange = true;
         collisionState = 'don\'t get hit, hooman';
-      }, 3000);
+      }, 2000);
     }
   }
 };
@@ -97,7 +97,7 @@ var enemies = svg.selectAll('circle').data(createEnemies(numEnemies)).enter().ap
   .attr('cy', function() { return Math.floor(Math.random()*height); })
   .attr('r',  function() { return Math.floor(Math.max(8, Math.random()*60)); })
   .attr('class', 'enemy')
-  .style("fill", function () { return randomRGB(); });
+  .style('fill', function () { return randomRGB(); });
 
 var player = svg.selectAll('rect')
   .data([{x: width/2, y: height/2, width: 16, height: 16}])
@@ -107,15 +107,15 @@ player.attr('x', function(d) { return d.x; })
   .attr('y', function(d) { return d.y; })
   .attr('width', function(d) { return d.width; })
   .attr('height', function(d) { return d.height; })
-  .style('fill', 'red')
+  .style('fill', '#0077BB')
   .style('stroke', 'white');
 
 var changeColor = function() {
-  player.transition().duration(100)
-      .style("fill", "#0099CC")
+  player.transition().duration(300)
+      .style('fill', '#0077BB')
     .transition()
-      .style("fill", "#00CCCC")
-    .each("end", changeColor);
+      .style('fill', '#00DDDD')
+    .each('end', changeColor);
 }
 
 changeColor();
