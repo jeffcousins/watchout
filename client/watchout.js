@@ -15,14 +15,14 @@ var collisionState = 'don\'t get hit, hooman';
 var states = ['I CAME IN LIKE A WRECKINGBALL', 'everyone who ever loved u was wrong',
               'it\'s a good thing ur pretty', 'LOLOL', 'omg how did u not see that',
               'ur failurez shood be on the youtube', 'this is why people talk about u',
-              'meow meow meow meow meow meow meow meow meow meow meow meow meow meow meow',
+              'meow meow meow meow meow meow meow meow meow meow',
               'that\'s it. we r no longer friends.', '/giphy incompetence'];
 var stateChange = true;
 var playerLocation = { x: width/2, y: height/2 };
 var numUpdates = 0;
 var bgColor = '#FFF';
 var wallColors = ['rgb(51,111,173)', 'rgb(91,66,119)', 'rgb(168,46,57)', 'rgb(200,200,125)',
-                  'rgb(220,180,65)', 'rgb(94,159,64)', 'rgb(144,169,190)']
+                  'rgb(220,180,65)', 'rgb(94,159,64)', 'rgb(144,169,190)'];
 
 if (operationSpark) {
   
@@ -30,9 +30,16 @@ if (operationSpark) {
     return wallColors[Math.floor(Math.random() * wallColors.length)];
   };
 
-  $('body').css('background-color', '#000');
+  // $('body').css('background-color', '#000');
+  $('body').css('background-image', 
+                'url("http://www.desktopas.com/files/2013/08/twilight-in-New-Orleans-painting-wallpaper-1600-x-1074.jpg")');
   $('.high').css('color', '#FFF');
   $('.current').css('color', '#FFF');
+  $('.message span').css(
+    {'background-color': 'white',
+     'border-top-right-radius': '10px',
+     'border-top-left-radius': '10px'
+    });
 
 } else {
 
